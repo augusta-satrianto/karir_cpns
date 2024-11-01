@@ -3,19 +3,27 @@ import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:karir_cpns_app/dashboard_page.dart';
 import 'package:karir_cpns_app/do_exam_page.dart';
+import 'package:karir_cpns_app/ebook_view_page.dart';
 import 'package:karir_cpns_app/landing_page.dart';
 import 'package:karir_cpns_app/login_page.dart';
+import 'package:karir_cpns_app/ebook_page.dart';
+import 'package:karir_cpns_app/materi_page.dart';
 import 'package:karir_cpns_app/prepare_exam_page.dart';
 import 'package:karir_cpns_app/register_page.dart';
-import 'package:karir_cpns_app/tryout_page.dart';
+import 'package:karir_cpns_app/pages/tryout/tryout_page.dart';
+import 'package:karir_cpns_app/video_page.dart';
+import 'package:karir_cpns_app/webinar_page.dart';
+import 'package:karir_cpns_app/webinar_view_page.dart';
 import 'package:url_strategy/url_strategy.dart';
 
 void main() async {
   await Hive.initFlutter();
   await Hive.openBox<int>('timer');
+  await Hive.openBox('credentialsBox');
   setPathUrlStrategy();
   runApp(const MyApp());
 }
+// flutter run -d chrome --web-renderer html --web-port 5000
 
 bool isLoggedIn = true;
 
@@ -54,9 +62,30 @@ final GoRouter _router = GoRouter(
         return null;
       },
       routes: [
+        // Materi
         GoRoute(
-          path: 'user/tryout/list', // relative path ke dashboard
-          builder: (context, state) => TryoutPage(),
+          path: 'user/learning-material',
+          builder: (context, state) => const MateriPage(),
+          routes: [
+            GoRoute(
+              path: 'document/list',
+              builder: (context, state) => const EbookPage(),
+            ),
+            GoRoute(
+              path: 'document/show',
+              builder: (context, state) => const EbookViewPage(),
+            ),
+            GoRoute(
+              path: 'video/list',
+              builder: (context, state) => const VideoPage(),
+            ),
+          ],
+        ),
+
+        // Tryout
+        GoRoute(
+          path: 'user/tryout/list',
+          builder: (context, state) => const TryoutPage(),
         ),
         GoRoute(
           path: 'user/tryout/prepare-exam/skd-cpns/:level/:examId',
@@ -74,6 +103,22 @@ final GoRouter _router = GoRouter(
             return DoExamPage(level: level, examId: examId);
           },
         ),
+
+        // Webinar
+        GoRoute(
+            path: 'user/webinar',
+            builder: (context, state) => const WebinarPage(),
+            routes: [
+              GoRoute(
+                path: ':webinarId',
+                builder: (context, state) {
+                  final webinarId = state.pathParameters['webinarId']!;
+                  return WebinarViewPage(
+                    webinarId: webinarId,
+                  );
+                },
+              ),
+            ]),
       ],
     ),
   ],

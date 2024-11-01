@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:karir_cpns_app/login_api.dart';
+import 'package:karir_cpns_app/services/auth_service.dart';
 
 class LandingPage extends StatelessWidget {
   const LandingPage({super.key});
@@ -30,33 +32,22 @@ class LandingPage extends StatelessWidget {
           const SizedBox(
             height: 20,
           ),
-          // ElevatedButton(
-          //   onPressed: () async {
-          //     try {
-          //       final user = await GoogleSignInService.login();
-          //       await user?.authentication;
-          //       // log(user!.displayName.toString());
-          //       // log(user.email);
-          //       // log(user.id);
-          //       // log(user.photoUrl.toString());
-          //       print(user!.email.toString());
-          //       print(user);
-          //       // if (context.mounted && user != null) {
-          //       //   Navigator.pushAndRemoveUntil(
-          //       //     context,
-          //       //     MaterialPageRoute(
-          //       //         builder: (context) => HomePage(
-          //       //               user: user,
-          //       //             )),
-          //       //     (Route<dynamic> route) => false,
-          //       //   );
-          //       // }
-          //     } catch (exception) {
-          //       // log(exception.toString());
-          //     }
-          //   },
-          //   child: Text('Login'),
-          // )
+          ElevatedButton(
+            onPressed: () async {
+              try {
+                final user = await GoogleSignInService.login();
+                await user?.authentication;
+                if (user != null) {
+                  await CredentialService.storeCredential(user);
+                  print('Credential stored: ${user.email}');
+                  context.goNamed('login');
+                }
+              } catch (exception) {
+                // Handle error
+              }
+            },
+            child: Text('Login'),
+          )
         ],
       ),
     );

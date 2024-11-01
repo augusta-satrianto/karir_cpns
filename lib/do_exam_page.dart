@@ -23,8 +23,8 @@ class _DoExamPageState extends State<DoExamPage> {
   int selectedQuestion = 0;
   late Box<String> answersBox; // Box Hive untuk menyimpan jawaban
   late Box<bool> marksBox; // Box Hive untuk menyimpan mark soal
-  final Map<int, String?> answers = {}; // Menyimpan jawaban per soal
-  final Map<int, bool> marks = {}; // Menyimpan status mark per soal
+  Map<int, String?> answers = {}; // Menyimpan jawaban per soal
+  Map<int, bool> marks = {}; // Menyimpan status mark per soal
   late Timer timer;
   late int remainingTime; // Countdown waktu tersisa dalam detik
 
@@ -42,7 +42,7 @@ class _DoExamPageState extends State<DoExamPage> {
   }
 
   void _loadAnswers() {
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 110; i++) {
       // Misalkan ada 10 soal
       answers[i] = answersBox.get(i.toString(),
           defaultValue: null); // Mengambil jawaban dari Hive
@@ -50,7 +50,7 @@ class _DoExamPageState extends State<DoExamPage> {
   }
 
   void _loadMarks() {
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 110; i++) {
       marks[i] = marksBox.get(i.toString(),
           defaultValue: false)!; // Mengambil status mark dari Hive
     }
@@ -58,7 +58,7 @@ class _DoExamPageState extends State<DoExamPage> {
 
   void _saveAnswer(int questionIndex, String? answer) {
     answersBox.put(
-        questionIndex.toString(), answer!); // Menyimpan jawaban ke Hive
+        questionIndex.toString(), answer!); // Menyimpan jawaban ke Hive`
   }
 
   void _toggleMark(int questionIndex) {
@@ -98,7 +98,7 @@ class _DoExamPageState extends State<DoExamPage> {
                 title: Row(
                   children: [
                     Image.asset(
-                      'assets/logo.png',
+                      'assets/images/logo.png',
                       width: 100,
                     ),
                   ],
@@ -370,8 +370,14 @@ class _DoExamPageState extends State<DoExamPage> {
                 ],
               ),
             );
+          } else if (state is QuestionFailed) {
+            return Scaffold(
+              body: Text(state.e),
+            );
           }
-          return const Scaffold();
+          return const Scaffold(
+            body: Text('A'),
+          );
         },
       ),
     );
